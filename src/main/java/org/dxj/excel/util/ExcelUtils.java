@@ -25,38 +25,44 @@ public class ExcelUtils {
      * @return
      * @throws IOException
      */
-    public static List<List<List<String>>> readxlsx(String path) throws IOException {
-        //获取excel文件的io流
-        InputStream is = new FileInputStream(path);
-        //创建一个内存中的excel文件XSSFWorkbook类型对象，这个对象代表了整个excel文件
-        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
-        List<List<List<String>>> result = new ArrayList<List<List<String>>>();
-        //循环每一页sheet，并处理当前页
-        for (XSSFSheet xssfSheet : xssfWorkbook) {
-            if (xssfSheet == null) {
-                continue;
-            }
-            //处理当前页，循环处理每一行
-            List<List<String>> sheetList = new ArrayList<List<String>>();
-            //从1开始，不读取表头
-            for (int rowNum = 0; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
-                //获取当前行
-                XSSFRow xssfRow = xssfSheet.getRow(rowNum);
-                int minColIndex = xssfRow.getFirstCellNum();
-                int maxColIndex = xssfRow.getLastCellNum();
-                List<String> rowList = new ArrayList<String>();
-                //处理当前行，循环处理每一个cell
-                for (int colIndex = minColIndex; colIndex < maxColIndex; colIndex++) {
-                    //获取当前cell
-                    XSSFCell cell = xssfRow.getCell(colIndex);
-                    if (cell == null) {
-                        continue;
-                    }
-                    rowList.add(cell.toString());
+    public static List<List<List<String>>> readxlsx(String path) {
+        List<List<List<String>>> result = null;
+        try {
+            //获取excel文件的io流
+            InputStream is = new FileInputStream(path);
+            //创建一个内存中的excel文件XSSFWorkbook类型对象，这个对象代表了整个excel文件
+            XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
+            result = new ArrayList<List<List<String>>>();
+            //循环每一页sheet，并处理当前页
+            for (XSSFSheet xssfSheet : xssfWorkbook) {
+                if (xssfSheet == null) {
+                    continue;
                 }
-                sheetList.add(rowList);
+                //处理当前页，循环处理每一行
+                List<List<String>> sheetList = new ArrayList<List<String>>();
+                //从1开始，不读取表头
+                for (int rowNum = 1; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
+                    //获取当前行
+                    XSSFRow xssfRow = xssfSheet.getRow(rowNum);
+                    int minColIndex = xssfRow.getFirstCellNum();
+                    int maxColIndex = xssfRow.getLastCellNum();
+                    List<String> rowList = new ArrayList<String>();
+                    //处理当前行，循环处理每一个cell
+                    for (int colIndex = minColIndex; colIndex < maxColIndex; colIndex++) {
+                        //获取当前cell
+                        XSSFCell cell = xssfRow.getCell(colIndex);
+                        if (cell == null) {
+                            continue;
+                        }
+                        rowList.add(cell.toString());
+                    }
+                    sheetList.add(rowList);
+                }
+                result.add(sheetList);
             }
-            result.add(sheetList);
+            is.close();
+        } catch (Exception e) {
+        } finally {
         }
         return result;
     }
