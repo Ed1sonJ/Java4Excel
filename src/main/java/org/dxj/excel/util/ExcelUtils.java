@@ -25,7 +25,7 @@ public class ExcelUtils {
      * @return
      * @throws IOException
      */
-    public static List<List<List<String>>> readxlsx(String path) {
+    public static List<List<List<String>>> readxlsx(String path , int firstSheet ,int lastSheet) {
         List<List<List<String>>> result = null;
         try {
             //获取excel文件的io流
@@ -33,8 +33,10 @@ public class ExcelUtils {
             //创建一个内存中的excel文件XSSFWorkbook类型对象，这个对象代表了整个excel文件
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
             result = new ArrayList<List<List<String>>>();
+
             //循环每一页sheet，并处理当前页
-            for (XSSFSheet xssfSheet : xssfWorkbook) {
+            for(int i = firstSheet ; i <=lastSheet ; i ++){
+                XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(i);
                 if (xssfSheet == null) {
                     continue;
                 }

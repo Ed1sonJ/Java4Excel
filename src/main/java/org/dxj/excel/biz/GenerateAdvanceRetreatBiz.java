@@ -3,7 +3,6 @@ package org.dxj.excel.biz;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.dxj.excel.bean.Rank;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
