@@ -18,6 +18,16 @@ import java.util.List;
  */
 public class GenerateBranchBiz extends BaseBiz {
     private int index;
+    public static final int CHINESE = 3;
+    public static final int MATH = 4;
+    public static final int ENGLISH = 5;
+    public static final int PHYSICS = 6;
+    public static final int CHEMISTRY = 7;
+    public static final int BIOLOGICAL = 8;
+    public static final int POLITICAL = 9;
+    public static final int HISTORY = 10;
+    public static final int GEOGRAPHY = 11;
+
 
     /**
      * ndex指的是在进退表中科任-X的X所在的列的index
@@ -108,10 +118,40 @@ public class GenerateBranchBiz extends BaseBiz {
         List<String> data = new ArrayList<String>();
         data.add("学号");
         data.add("姓名");
-        //加一层判断index
-        data.add("语文");
-        data.add("语名");
-
+        switch (index) {
+            case CHINESE:
+                data.add("语文");
+                data.add("语名");
+                break;
+            case MATH:
+                data.add("数学");
+                data.add("数名");
+                break;
+            case ENGLISH:
+                data.add("英语");
+                data.add("英名");
+                break;
+            case PHYSICS:
+                data.add("物理");
+                data.add("物名");
+                break;
+            case BIOLOGICAL:
+                data.add("生物");
+                data.add("生名");
+                break;
+            case POLITICAL:
+                data.add("政治");
+                data.add("政名");
+                break;
+            case HISTORY:
+                data.add("历史");
+                data.add("历名");
+                break;
+            case GEOGRAPHY:
+                data.add("地理");
+                data.add("地名");
+                break;
+        }
         data.add("进退-期末");
         data.add("进退-一段");
         data.add("3总名");

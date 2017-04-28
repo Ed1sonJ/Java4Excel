@@ -102,8 +102,6 @@ public class GenerateParentBiz extends BaseBiz{
 
         //填充期末和一段进退
         generateAdvanceAndRetreat(sheet1Row, sheet2Row, sheet3Row, row);
-
-
     }
 
     /**
@@ -196,18 +194,6 @@ public class GenerateParentBiz extends BaseBiz{
         rankList.add(likeRankRate);
         return rankList;
     }
-
-//    /**
-//     * 初始化家长表的所有行row
-//     */
-//    @Override
-//    XSSFSheet newBody(int sheetLength, XSSFSheet sheet) {
-//        //有41行数据，所以i<=sheetLength
-//        for (int i = 1; i <= sheetLength; i++) {
-//            sheet.createRow(i);
-//        }
-//        return sheet;
-//    }
 
     @Override
     void generateHeadData(XSSFRow row) {
