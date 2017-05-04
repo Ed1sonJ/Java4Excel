@@ -4,10 +4,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,34 +14,29 @@ import java.util.List;
  * description : 生成每科进退表
  */
 public class GenerateAdvanceRetreatBiz extends BaseBiz {
-    public XSSFWorkbook generateSheet(String path, String name, List<List<String>> agoSheetData, List<List<String>> targetSheetData) {
-        try {
+    public XSSFWorkbook generateSheet(String path, String name, List<List<String>> agoSheetData, List<List<String>> targetSheetData) throws IOException {
 
-            int sheetLength = targetSheetData.size();//41
-            InputStream is = new FileInputStream(path);
-            XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
-            //生成进退表
-            XSSFSheet parentSheet = xssfWorkbook.createSheet(name);
-            //获取第0行
-            XSSFRow row0 = parentSheet.createRow(0);
-            //生成表头
-            generateHeadData(row0);
-            //初始化进退表的所有行
-            parentSheet = BizUtils.newBody(sheetLength, parentSheet);
-            //生成进退表的所有数据
-            generateBodyData(parentSheet, agoSheetData, targetSheetData);
+        int sheetLength = targetSheetData.size();//41
+        InputStream is = new FileInputStream(path);
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
+        //生成进退表
+        XSSFSheet parentSheet = xssfWorkbook.createSheet(name);
+        //获取第0行
+        XSSFRow row0 = parentSheet.createRow(0);
+        //生成表头
+        generateHeadData(row0);
+        //初始化进退表的所有行
+        parentSheet = BizUtils.newBody(sheetLength, parentSheet);
+        //生成进退表的所有数据
+        generateBodyData(parentSheet, agoSheetData, targetSheetData);
 
-            OutputStream os = new FileOutputStream(path);
-            xssfWorkbook.write(os);
+        OutputStream os = new FileOutputStream(path);
+        xssfWorkbook.write(os);
 
-            is.close();
-            os.close();
-            return xssfWorkbook;
-        } catch (Exception e) {
-            e.printStackTrace();
+        is.close();
+        os.close();
+        return xssfWorkbook;
 
-        }
-        return null;
     }
 
     /**

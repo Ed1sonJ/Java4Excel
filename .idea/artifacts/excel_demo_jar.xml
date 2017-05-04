@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact name="excel_demo:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/excel_demo_jar</output-path>
+    <root id="root">
+      <element id="archive" name="excel_demo.jar">
+        <element id="module-output" name="excel_demo" />
+      </element>
+      <element id="directory" name="libs">
+        <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.5" />
+        <element id="library" level="project" name="Maven: dom4j:dom4j:1.6.1" />
+        <element id="library" level="project" name="Maven: org.apache.poi:poi-ooxml-schemas:3.10-FINAL" />
+        <element id="library" level="project" name="Maven: org.apache.poi:poi-ooxml:3.10-FINAL" />
+        <element id="library" level="project" name="Maven: org.apache.poi:poi:3.10-FINAL" />
+        <element id="library" level="project" name="Maven: org.apache.xmlbeans:xmlbeans:2.3.0" />
+        <element id="library" level="project" name="Maven: stax:stax-api:1.0.1" />
+        <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.0.b2" />
+      </element>
+    </root>
+  </artifact>
+</component>

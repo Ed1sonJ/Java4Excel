@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: libs/poi-ooxml-3.10-FINAL.jar libs/xml-apis-1.0.b2.jar lib
+ s/poi-3.10-FINAL.jar libs/dom4j-1.6.1.jar libs/poi-ooxml-schemas-3.10
+ -FINAL.jar libs/commons-codec-1.5.jar libs/stax-api-1.0.1.jar libs/xm
+ lbeans-2.3.0.jar
+Main-Class: org.dxj.excel.App
+

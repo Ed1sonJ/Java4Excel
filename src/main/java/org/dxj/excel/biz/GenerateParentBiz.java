@@ -5,10 +5,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dxj.excel.bean.Rank;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -24,34 +21,31 @@ public class GenerateParentBiz extends BaseBiz {
      * @param data
      * @param rankList 存放了家长表中的学号，各种排名
      */
-    public void generateSheet(String path, String name, List<List<List<String>>> data, List<Rank> rankList) {
-        try {
-            //拿到本次成绩
-            List<List<String>> sheet3 = data.get(2);
-            int sheetLength = sheet3.size();//41
+    public void generateSheet(String path, String name, List<List<List<String>>> data, List<Rank> rankList) throws IOException {
 
-            InputStream is = new FileInputStream(path);
-            XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
-            //生成家长表
-            XSSFSheet parentSheet = xssfWorkbook.createSheet(name);
-            //获取第0行
-            XSSFRow row0 = parentSheet.createRow(0);
-            //生成表头
-            generateHeadData(row0);
-            //初始化家长表的所有行
-            parentSheet = BizUtils.newBody(sheetLength, parentSheet);
-            //生成家长表的所有数据
-            generateBodyData(parentSheet, data, rankList);
+        //拿到本次成绩
+        List<List<String>> sheet3 = data.get(2);
+        int sheetLength = sheet3.size();//41
 
-            OutputStream os = new FileOutputStream(path);
-            xssfWorkbook.write(os);
+        InputStream is = new FileInputStream(path);
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
+        //生成家长表
+        XSSFSheet parentSheet = xssfWorkbook.createSheet(name);
+        //获取第0行
+        XSSFRow row0 = parentSheet.createRow(0);
+        //生成表头
+        generateHeadData(row0);
+        //初始化家长表的所有行
+        parentSheet = BizUtils.newBody(sheetLength, parentSheet);
+        //生成家长表的所有数据
+        generateBodyData(parentSheet, data, rankList);
 
-            is.close();
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        OutputStream os = new FileOutputStream(path);
+        xssfWorkbook.write(os);
 
-        }
+        is.close();
+        os.close();
+
     }
 
     /**

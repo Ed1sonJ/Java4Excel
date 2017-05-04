@@ -4,10 +4,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,32 +14,28 @@ import java.util.List;
  * description : 生成XX-前X表，继承Base类自动生成表头
  */
 public class GeneratePaimingBiz extends BaseBiz {
-    public XSSFWorkbook generateSheet(String path, String name, List<List<String>> result) {
-        try {
-            int sheetLength = result.size();
-            InputStream is = new FileInputStream(path);
-            XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
-            //生成XX-前X表
-            XSSFSheet parentSheet = xssfWorkbook.createSheet(name);
-            //获取第0行
-            XSSFRow row0 = parentSheet.createRow(0);
-            //生成表头
-            generateHeadData(row0);
-            //初始化XX-前X的所有行
-            parentSheet = BizUtils.newBody(sheetLength, parentSheet);
-            //生成XX-前X表的所有数据
-            generateBodyData(parentSheet, result);
+    public XSSFWorkbook generateSheet(String path, String name, List<List<String>> result) throws IOException {
+        int sheetLength = result.size();
+        InputStream is = new FileInputStream(path);
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
+        //生成XX-前X表
+        XSSFSheet parentSheet = xssfWorkbook.createSheet(name);
+        //获取第0行
+        XSSFRow row0 = parentSheet.createRow(0);
+        //生成表头
+        generateHeadData(row0);
+        //初始化XX-前X的所有行
+        parentSheet = BizUtils.newBody(sheetLength, parentSheet);
+        //生成XX-前X表的所有数据
+        generateBodyData(parentSheet, result);
 
-            OutputStream os = new FileOutputStream(path);
-            xssfWorkbook.write(os);
+        OutputStream os = new FileOutputStream(path);
+        xssfWorkbook.write(os);
 
-            is.close();
-            os.close();
-            return xssfWorkbook;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        is.close();
+        os.close();
+        return xssfWorkbook;
+
     }
 
     /**
@@ -53,7 +46,7 @@ public class GeneratePaimingBiz extends BaseBiz {
      */
     private void generateBodyData(XSSFSheet parentSheet, List<List<String>> result) {
         for (int i = 1; i <= result.size(); i++) {
-            List<String> rowData = result.get(i -1);
+            List<String> rowData = result.get(i - 1);
             XSSFRow row = parentSheet.getRow(i);
             for (int j = 0; j < rowData.size(); j++) {
                 row.createCell(j).setCellValue(rowData.get(j));

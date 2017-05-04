@@ -4,10 +4,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,34 +31,30 @@ public class GenerateBranchBiz extends BaseBiz {
      *
      * @return
      */
-    public XSSFWorkbook generateSheet(String path, String name, int index, List<List<String>> sheetScoreData, List<List<String>> sheetQimoData, List<List<String>> sheetYiduanData, List<String> classRank) {
-        try {
-            this.index = index;
-            int sheetLength = sheetScoreData.size();//41
-            InputStream is = new FileInputStream(path);
-            XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
-            //生成科任-XX表
-            XSSFSheet parentSheet = xssfWorkbook.createSheet(name);
-            //获取第0行
-            XSSFRow row0 = parentSheet.createRow(0);
-            //生成表头
-            generateHeadData(row0);
-            //初始化科任-XX表的所有行
-            parentSheet = BizUtils.newBody(sheetLength, parentSheet);
-            //生成科任-XX表的所有数据
-            generateBodyData(parentSheet, sheetScoreData, sheetQimoData, sheetYiduanData, classRank);
+    public XSSFWorkbook generateSheet(String path, String name, int index, List<List<String>> sheetScoreData, List<List<String>> sheetQimoData, List<List<String>> sheetYiduanData, List<String> classRank) throws IOException {
 
-            OutputStream os = new FileOutputStream(path);
-            xssfWorkbook.write(os);
+        this.index = index;
+        int sheetLength = sheetScoreData.size();//41
+        InputStream is = new FileInputStream(path);
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
+        //生成科任-XX表
+        XSSFSheet parentSheet = xssfWorkbook.createSheet(name);
+        //获取第0行
+        XSSFRow row0 = parentSheet.createRow(0);
+        //生成表头
+        generateHeadData(row0);
+        //初始化科任-XX表的所有行
+        parentSheet = BizUtils.newBody(sheetLength, parentSheet);
+        //生成科任-XX表的所有数据
+        generateBodyData(parentSheet, sheetScoreData, sheetQimoData, sheetYiduanData, classRank);
 
-            is.close();
-            os.close();
-            return xssfWorkbook;
-        } catch (Exception e) {
-            e.printStackTrace();
+        OutputStream os = new FileOutputStream(path);
+        xssfWorkbook.write(os);
 
-        }
-        return null;
+        is.close();
+        os.close();
+        return xssfWorkbook;
+
     }
 
     /**
