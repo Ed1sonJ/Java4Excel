@@ -7,17 +7,17 @@ package org.dxj.excel.bean;
  */
 public class Rank {
     private String id;//学号
-    private String chinese;
-    private String math;
-    private String english;
-    private String physics;
-    private String chemology;
-    private String biological;
-    private String politics;
-    private String history;
-    private String geography;
-    private String wenkeRank;
-    private String likeRank;
+    private String chinese;//语文排名
+    private String math;//数学排名
+    private String english;//英语排名
+    private String physics;//物理排名
+    private String chemology;//化学排名
+    private String biological;//生物排名
+    private String politics;//政治排名
+    private String history;//历史排名
+    private String geography;//地理排名
+    private String wenkeRank;//文科排名
+    private String likeRank;//理科排名
     private String totalRank;//9科总排名
 
     public String getId() {

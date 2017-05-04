@@ -104,6 +104,33 @@ public class BizUtils {
         return sheet;
     }
 
+    /**
+     * 冒泡排序
+     *
+     * @param numList    学号List
+     * @param targetList 用于排序的目标List
+     */
+    public static void BubbleSort(List<String> numList, List<String> targetList) {
+        int length = targetList.size();
+        boolean flag = true;//标志位，标志是否有更换，没有则跳出循环
+        //总共要跑 长度-1 次才能排出序
+        while (flag) {
+            flag = false;
+            for (int j = 1; j < length; j++) {
+                if (Float.parseFloat(targetList.get(j - 1)) > Float.parseFloat(targetList.get(j))) {
+                    String temp = targetList.get(j - 1);
+                    targetList.set(j - 1, targetList.get(j));
+                    targetList.set(j, temp);
+
+                    temp = numList.get(j - 1);
+                    numList.set(j - 1, numList.get(j));
+                    numList.set(j, temp);
+                    flag = true;
+                }
+            }
+        }
+
+    }
 }
 
 

@@ -12,13 +12,19 @@ import java.io.OutputStream;
 import java.util.*;
 
 /**
- * author : duxiji
- * date : 2017/4/25
- * description : 生成成绩表（家长版）
+ * @author : duxiji
+ * @date : 2017/4/25
+ * @description : 生成成绩表（家长版）
  */
-public class GenerateParentBiz extends BaseBiz{
+public class GenerateParentBiz extends BaseBiz {
 
-    public void generateSheet(String path ,String name, List<List<List<String>>> data,List<Rank> rankList) {
+    /**
+     * @param path
+     * @param name
+     * @param data
+     * @param rankList 存放了家长表中的学号，各种排名
+     */
+    public void generateSheet(String path, String name, List<List<List<String>>> data, List<Rank> rankList) {
         try {
             //拿到本次成绩
             List<List<String>> sheet3 = data.get(2);
@@ -35,7 +41,7 @@ public class GenerateParentBiz extends BaseBiz{
             //初始化家长表的所有行
             parentSheet = BizUtils.newBody(sheetLength, parentSheet);
             //生成家长表的所有数据
-            generateBodyData(parentSheet, data,rankList);
+            generateBodyData(parentSheet, data, rankList);
 
             OutputStream os = new FileOutputStream(path);
             xssfWorkbook.write(os);
@@ -50,29 +56,27 @@ public class GenerateParentBiz extends BaseBiz{
 
     /**
      * 填充sheet的数据
-     *
      */
-    private void generateBodyData(XSSFSheet parentSheet, List<List<List<String>>> data,List<Rank> rankList) {
+    private void generateBodyData(XSSFSheet parentSheet, List<List<List<String>>> data, List<Rank> rankList) {
         List<List<String>> sheet1 = data.get(0);
         List<List<String>> sheet2 = data.get(1);
         List<List<String>> sheet3 = data.get(2);
         int sheetLength = sheet3.size();//41
-
-        //先填充班级排名，涉及到全部学号和9科总分的排名，所以先进行
-//        parentSheet = generateClassRank(rankList, parentSheet, sheetLength);
 
         for (int i = 1; i <= sheetLength; i++) {
             XSSFRow row = parentSheet.getRow(i);
             //生成每一行的数据
             generateRowData(row, sheet1.get(i - 1), sheet2.get(i - 1), sheet3.get(i - 1), rankList.get(i - 1));
         }
+        //先填充班级排名，涉及到全部学号和9科总分的排名，所以先进行
+        generateClassRank(rankList, parentSheet, sheetLength);
     }
 
     /**
      * 填充行数据
      */
     private void generateRowData(XSSFRow row, List<String> sheet1Row, List<String> sheet2Row,
-                                        List<String> sheet3Row, Rank rank) {
+                                 List<String> sheet3Row, Rank rank) {
         //填充班别、学号、姓名
         for (int i = 0; i < 3; i++) {
             row.createCell(i).setCellValue(sheet3Row.get(i));
@@ -103,53 +107,72 @@ public class GenerateParentBiz extends BaseBiz{
         //填充期末和一段进退
         generateAdvanceAndRetreat(sheet1Row, sheet2Row, sheet3Row, row);
     }
+//
+//    /**
+//     * 填充班级排名
+//     *
+//     * @deprecated 算法出错了
+//     */
+//    private XSSFSheet generateClassRank(List<Rank> rankList, XSSFSheet parentSheet, int length) {
+//        // TODO: 2017/4/27 算法错误
+//        //使用TreeMap可以进行排序
+//        //存放<9科排名，学号>，以9科总分排名
+//        Map<Float, String> idAndTotalRank = new TreeMap<Float, String>();
+//        for (int i = 0; i < length; i++) {
+//            Rank rank = rankList.get(i);
+//            idAndTotalRank.put(Float.parseFloat(rank.getTotalRank()), rank.getId());
+//        }
+//
+//        //存放<学号，班级排名>
+//        //以学号作为排序
+//        Map<String, String> idAndClassRank = new TreeMap<String, String>();
+//        Set<Float> keySet = idAndTotalRank.keySet();
+//        Iterator<Float> iter = keySet.iterator();
+//        int i = 1;
+//        while (iter.hasNext()) {
+//            Float key = iter.next();
+//            //获取到学号
+//            System.out.println(key + ":" + idAndTotalRank.get(key));
+//            String num = idAndTotalRank.get(key);
+//            idAndClassRank.put(num, String.valueOf(i));
+//            i++;
+//        }
+//
+//        //遍历Map，将班级排名写进sheet
+//        Set<String> keySet2 = idAndClassRank.keySet();
+//        Iterator<String> iter2 = keySet2.iterator();
+//        int j = 1;
+//        while (iter2.hasNext()) {
+//            String key = iter2.next();
+//            System.out.println(key + ":" + idAndClassRank.get(key));
+//            parentSheet.getRow(j).createCell(33).setCellValue(idAndClassRank.get(key));
+//            j++;
+//        }
+//        return parentSheet;
+//    }
 
-    /**
-     * 填充班级排名
-     *
-     */
     private XSSFSheet generateClassRank(List<Rank> rankList, XSSFSheet parentSheet, int length) {
-        // TODO: 2017/4/27 算法错误
-        //使用TreeMap可以进行排序
-        //存放<9科排名，学号>，以9科总分排名
-        Map<Float, String> idAndTotalRank = new TreeMap<Float, String>();
-        for (int i = 0; i < length; i++) {
-            Rank rank = rankList.get(i);
-            idAndTotalRank.put(Float.parseFloat(rank.getTotalRank()), rank.getId());
+        List<String> numList = new ArrayList<String>();//存放学号
+        List<String> totalRankList = new ArrayList<String>();//存放9科排名
+        for (Rank rank : rankList) {
+            numList.add(rank.getId());
+            totalRankList.add(rank.getTotalRank());
         }
-
-        //存放<学号，班级排名>
-        //以学号作为排序
-        Map<String, String> idAndClassRank = new TreeMap<String, String>();
-        Set<Float> keySet = idAndTotalRank.keySet();
-        Iterator<Float> iter = keySet.iterator();
-        int i = 1;
-        while (iter.hasNext()) {
-            Float key = iter.next();
-            //获取到学号
-            System.out.println(key + ":" + idAndTotalRank.get(key));
-            String num = idAndTotalRank.get(key);
-            idAndClassRank.put(num, String.valueOf(i));
-            i++;
-        }
-
-        //遍历Map，将班级排名写进sheet
-        Set<String> keySet2 = idAndClassRank.keySet();
-        Iterator<String> iter2 = keySet2.iterator();
-        int j = 1;
-        while (iter2.hasNext()) {
-            String key = iter2.next();
-            System.out.println(key + ":" + idAndClassRank.get(key));
-            parentSheet.getRow(j).createCell(33).setCellValue(idAndClassRank.get(key));
-            j++;
+        BizUtils.BubbleSort(numList, totalRankList);//冒泡排序
+        for (int i = 1; i <= numList.size(); i++) {//排序排名
+            for (int j = 1; j <= numList.size(); j++) {
+                if (parentSheet.getRow(i).getCell(1).toString().equals(numList.get(j - 1))) {
+                    parentSheet.getRow(i).createCell(33).setCellValue(j);
+                }
+            }
         }
         return parentSheet;
     }
 
     /**
      * 填充期末和一段进退
-     *
      */
+
     private void generateAdvanceAndRetreat(List<String> sheet1Row, List<String> sheet2Row, List<String> sheet3Row, XSSFRow row) {
         String endPeriod = sheet1Row.get(24);
         String yiduan = sheet2Row.get(24);
@@ -164,7 +187,6 @@ public class GenerateParentBiz extends BaseBiz{
 
     /**
      * 填充对位率
-     *
      */
     private List<String> generateRankList(Rank rank) {
 
@@ -194,6 +216,7 @@ public class GenerateParentBiz extends BaseBiz{
         rankList.add(likeRankRate);
         return rankList;
     }
+
 
     @Override
     void generateHeadData(XSSFRow row) {
@@ -232,6 +255,6 @@ public class GenerateParentBiz extends BaseBiz{
         data.add("进退-期末");
         data.add("进退-一段");
         data.add("班级排名");
-        BizUtils.generateHeadData(row,data);
+        BizUtils.generateHeadData(row, data);
     }
 }

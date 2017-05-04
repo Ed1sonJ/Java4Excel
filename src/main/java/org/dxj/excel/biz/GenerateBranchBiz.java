@@ -34,7 +34,7 @@ public class GenerateBranchBiz extends BaseBiz {
      *
      * @return
      */
-    public XSSFWorkbook generateSheet(String path, String name, int index, List<List<String>> sheetScoreData, List<List<String>> sheetQimoData, List<List<String>> sheetYiduanData) {
+    public XSSFWorkbook generateSheet(String path, String name, int index, List<List<String>> sheetScoreData, List<List<String>> sheetQimoData, List<List<String>> sheetYiduanData, List<String> classRank) {
         try {
             this.index = index;
             int sheetLength = sheetScoreData.size();//41
@@ -49,7 +49,7 @@ public class GenerateBranchBiz extends BaseBiz {
             //初始化科任-XX表的所有行
             parentSheet = BizUtils.newBody(sheetLength, parentSheet);
             //生成科任-XX表的所有数据
-            generateBodyData(parentSheet, sheetScoreData, sheetQimoData, sheetYiduanData);
+            generateBodyData(parentSheet, sheetScoreData, sheetQimoData, sheetYiduanData, classRank);
 
             OutputStream os = new FileOutputStream(path);
             xssfWorkbook.write(os);
@@ -67,19 +67,19 @@ public class GenerateBranchBiz extends BaseBiz {
     /**
      * 填充sheet数据
      */
-    private void generateBodyData(XSSFSheet parentSheet, List<List<String>> sheetScoreData, List<List<String>> sheetQimoData, List<List<String>> sheetYiduanData) {
+    private void generateBodyData(XSSFSheet parentSheet, List<List<String>> sheetScoreData, List<List<String>> sheetQimoData, List<List<String>> sheetYiduanData, List<String> classRank) {
         int sheetLength = sheetScoreData.size();//41
         for (int i = 1; i <= sheetLength; i++) {
             XSSFRow row = parentSheet.getRow(i);
             //生成每一行的数据
-            generateRowData(row, sheetScoreData.get(i - 1), sheetQimoData.get(i - 1), sheetYiduanData.get(i - 1));
+            generateRowData(row, sheetScoreData.get(i - 1), sheetQimoData.get(i - 1), sheetYiduanData.get(i - 1), classRank.get(i - 1));
         }
     }
 
     /**
      * 填充每一行的数据
      */
-    private void generateRowData(XSSFRow row, List<String> rowScoreData, List<String> rowQimoData, List<String> rowYiduanData) {
+    private void generateRowData(XSSFRow row, List<String> rowScoreData, List<String> rowQimoData, List<String> rowYiduanData, String classRank) {
         //填充学号、姓名
         for (int i = 0; i < 2; i++) {
             row.createCell(i).setCellValue(rowScoreData.get(i + 1));
@@ -109,8 +109,8 @@ public class GenerateBranchBiz extends BaseBiz {
             row.createCell(i).setCellValue(rowScoreData.get(j));
             j = j + 2;
         }
-
-
+        //填充班级排名
+        row.createCell(18).setCellValue(classRank);
     }
 
     @Override
@@ -135,6 +135,9 @@ public class GenerateBranchBiz extends BaseBiz {
                 data.add("物理");
                 data.add("物名");
                 break;
+            case CHEMISTRY:
+                data.add("化学");
+                data.add("化名");
             case BIOLOGICAL:
                 data.add("生物");
                 data.add("生名");
